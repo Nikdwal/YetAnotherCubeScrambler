@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from optparse import OptionParser
 from cube import *
 import scramble
