@@ -15,3 +15,5 @@ def inverse_alg(alg : str):
 # generate an algorithm for the given random state
 def generate_state(random_state):
     return inverse_alg(kociemba.solve(random_state))
+
+

@@ -1,4 +1,4 @@
-from random import random, uniform
+import random
 
 class Corner:
     def __init__(self, colors : str):
@@ -19,6 +19,31 @@ class Edge:
 
     def flip(self):
         self.colors.reverse()
+
+# Corrects the name of a given corner so that it respects the convention that the colours on
+# that corner piece are listed in clockwise order
+# @param id: The name of a corner (e.g. UFR) which may or may not list the letters in the correct order
+def parse_corner_id(id):
+    # determine if it is a U/D corner and identify the other faces
+    faces_clockwise = "RFLB"
+    UlayerCorner = "U" in id
+    first_letter = "U" if UlayerCorner else "D"
+    otherfaces = "".join([letter for letter in id if letter != first_letter])
+
+    # rearrange so that the colours are listed in clockwise order
+    correct_order = faces_clockwise if UlayerCorner else faces_clockwise[::-1]
+    if correct_order[(correct_order.index(otherfaces[0]) + 1) % len(correct_order)] == otherfaces[1]:
+        return first_letter + otherfaces
+    else:
+        return first_letter + otherfaces[::-1]
+
+# Corrects the name of a given edge so that it respects the convention that id[0] in "UD" or id[1] in "RL"
+# @param id: The name of a edge (e.g. BR) which may or may not list the letters in the correct order
+def parse_edge_id(id):
+    if id[0] in "UD" or id[1] in "RL":
+        return id
+    else:
+        return id[::-1]
 
 class Cube:
 
@@ -100,11 +125,12 @@ class Cube:
             self.corners["DBL"].colors[1]
 
     # twist all the corners of this cube randomly while keeping the cube solvable
+    # @param corners:   the corners that should be scrambled
     def random_corner_orientation(self, corners = corner_locations):
         # twist each corner clockwise, counterclockwise, or not at all
         total_clockwise_turns = 0
         for i in range(len(corners) - 1):
-            num_clockwise_turns = int(3*random()) # [0..2]
+            num_clockwise_turns = int(3*random.random()) # [0..2]
             for k in range(num_clockwise_turns):
                 self.corners[corners[i]].rotate_clockwise()
             total_clockwise_turns = (total_clockwise_turns + num_clockwise_turns) % 3
@@ -114,11 +140,12 @@ class Cube:
             self.corners[corners[-1]].rotate_clockwise()
 
     # flip all the edges of this cube randomly while keeping the cube solvable
+    # @param edges:   the edges that should be scrambled
     def random_edge_orientation(self, edges = edge_locations):
         # Determine for each edge if it should be flipped
         even_number_flips = True
         for i in range(len(edges) - 1):
-            if random() < 0.5:
+            if random.random() < 0.5:
                 self.edges[edges[i]].flip()
                 even_number_flips = not even_number_flips
 
@@ -126,6 +153,8 @@ class Cube:
         if not even_number_flips:
             self.edges[edges[-1]].flip()
 
+    # @param corners: the corners that should be scrambled
+    # @param edges:   the edges that should be scrambled
     def random_permutation(self, corners = corner_locations, edges = edge_locations):
 
         def swap_corners(i, j):
@@ -141,14 +170,14 @@ class Cube:
         even_num_swaps = True
         # Fischer-Yates shuffle the corners
         for i in range(len(corners) - 1):
-            j = int(uniform(i, len(corners) - 1))
+            j = int(random.uniform(i, len(corners)))
             if i != j:
                 swap_corners(i, j)
                 even_num_swaps = not even_num_swaps
 
         # Fischer-Yates shuffle the edges
         for i in range(len(edges) - 1):
-            j = int(uniform(i, len(edges) - 1))
+            j = int(random.uniform(i, len(edges)))
             if i != j:
                 swap_edges(i, j)
                 even_num_swaps = not even_num_swaps
@@ -156,7 +185,16 @@ class Cube:
         if not even_num_swaps:
             if len(corners) == 0:
                 swap_edges(0, 1)
-            elif len(edges) == 0 or random() < 0.5:
+            elif len(edges) == 0 or random.random() < 0.5:
                 swap_corners(0, 1)
             else:
                 swap_edges(0, 1)
+
+    # flip exacly n edges of this cube randomly
+    # @param edges:   the edges that should be scrambled
+    def flip_n_edges(self, edge_locations, n):
+        if n % 2 != 0:
+            raise ValueError("Cannot flip an odd number of edges.")
+        flipped_edges = random.sample(edge_locations, n)
+        for edge in flipped_edges:
+            self.edges[edge].flip()
