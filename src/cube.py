@@ -7,9 +7,10 @@ class Corner:
         # the first element is the colour that is either on top or on the bottom
         # the second is the first sticker clockwise from the first.
 
-    def rotate_clockwise(self):
-        self.colors.insert(0, self.colors[-1])
-        del self.colors[-1]
+    def rotate_clockwise(self, num_times = 1):
+        for _ in range(num_times):
+            self.colors.insert(0, self.colors[-1])
+            del self.colors[-1]
 
 class Edge:
     def __init__(self, colors: str):
@@ -131,13 +132,12 @@ class Cube:
         total_clockwise_turns = 0
         for i in range(len(corners) - 1):
             num_clockwise_turns = int(3*random.random()) # [0..2]
-            for k in range(num_clockwise_turns):
-                self.corners[corners[i]].rotate_clockwise()
+            self.corners[corners[i]].rotate_clockwise(num_clockwise_turns)
             total_clockwise_turns = (total_clockwise_turns + num_clockwise_turns) % 3
 
         # avoid CO parity by twisting the last corner correctly
-        for i in range((3 - total_clockwise_turns) % 3):
-            self.corners[corners[-1]].rotate_clockwise()
+        if total_clockwise_turns % 3 != 0:
+            self.corners[corners[-1]].rotate_clockwise((3 - total_clockwise_turns) % 3)
 
     # flip all the edges of this cube randomly while keeping the cube solvable
     # @param edges:   the edges that should be scrambled
@@ -198,3 +198,22 @@ class Cube:
         flipped_edges = random.sample(edge_locations, n)
         for edge in flipped_edges:
             self.edges[edge].flip()
+
+    # Do a U turn
+    def Umove(self, num_turns=1):
+        adj_faces_cw = "FLBR"
+        U_corners = sorted([corner for corner in Cube.corner_locations if "U" in corner], key=lambda corner : adj_faces_cw.index(corner[1]))
+        U_edges   = sorted([edge for edge in Cube.edge_locations if "U" in edge], key=lambda edge : adj_faces_cw.index(edge[1]))
+        prev_corners = [self.corners[c] for c in U_corners]
+        prev_edges   = [self.edges[e] for e in U_edges]
+        for i in range(4):
+            self.corners[U_corners[i]] = prev_corners[i - num_turns]
+            self.edges[U_edges[i]] = prev_edges[i - num_turns]
+
+    def randomAUF(self):
+        self.Umove(int(random.uniform(0,4)))
+
+
+
+
+
