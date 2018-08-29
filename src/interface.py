@@ -3,6 +3,10 @@
 from tkinter import *
 import subprocess
 import shlex
+import os
+
+curr_directory = os.path.dirname(os.path.abspath(__file__))
+os.chdir(curr_directory)
 
 root = PanedWindow(orient=VERTICAL)
 root.pack(fill=BOTH, expand=1)
