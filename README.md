@@ -55,7 +55,7 @@ This disorients and permutes the corners in the U layer as well as the DFR corne
 
 --------
 
-.```-c OCLL, --ocll=OCLL```
+```-c OCLL, --ocll=OCLL```
 
 This forces a specific corner case for the last layer. You can enter a single OCLL case or a list in quotation marks, in which case it will choose one randomly. The names of these OCLL cases are U, T, L, H, Pi (or Bruno), S (or Sune), and AS (or Antisune). You should probably use this in combination with other flags
 
@@ -74,7 +74,7 @@ This forces a specific corner case for the last layer. You can enter a single OC
 This is made specifically for ZZ users. It generates a scramble with a given number of bad edges. This is the only way to ensure that exactly *N* edges are disoriented, as opposed to *at most N*, which can be done to some extent with the ```--eo``` flag.
 
 ##### *examples*
-. ```-e 12``` or ```--badedges 12```
+```-e 12``` or ```--badedges 12```
 
 *example result:* B2 L2 D U2 L2 D2 U' B2 D B U' R' U L2 F2 L2 R B' U2
 
