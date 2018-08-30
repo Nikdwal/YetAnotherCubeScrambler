@@ -63,11 +63,17 @@ def set_step(cube : Cube, step : str):
         cube.random_permutation([], _U_edges)
     elif step == "CPLL":
         cube.random_permutation(_U_corners, [])
-    elif step == "CMLL":
+    elif step in ["CMLL", "CMLLEO"]:
         edges = parse_pieces_same_type("U DF DB", parse_edge_id, Cube.edge_locations)
         cube.random_permutation(_U_corners, edges)
         cube.random_corner_orientation(_U_corners)
         cube.random_edge_orientation(edges)
+    elif step == "ZZLL":
+        # If you just do "permute two edges and two corners", the probabilities don't quite match up.
+        phase_edges = parse_pieces_same_type("UF UB", parse_edge_id, Cube.edge_locations)
+        cube.random_permutation(_U_corners, phase_edges)
+        cube.random_corner_orientation(_U_corners)
+        cube.randomAUF() # the phase edges can also be on the side.
     elif step == "F2L":
         edges = parse_pieces_same_type("U FR FL BR BL", parse_edge_id, Cube.edge_locations)
         cube.random_permutation(Cube.corner_locations, edges)
@@ -103,6 +109,29 @@ def set_step(cube : Cube, step : str):
         cube.random_corner_orientation(_LS_corners)
     elif step == "TTLL":
         cube.random_permutation(_LS_corners, _U_edges)
+    elif step == "WV":
+        cube.random_permutation(_U_corners, _U_edges)
+        cube.random_corner_orientation(_U_corners)
+        cube.apply_algorithm("R U R'")
+    elif step == "SV":
+        cube.random_permutation(_U_corners, _U_edges)
+        cube.random_corner_orientation(_U_corners)
+        cube.apply_algorithm("R U\' R\'")
+    elif step in ["VLS", "VHLS"]:
+        cube.random_permutation(_U_corners, _U_edges)
+        cube.random_corner_orientation(_U_corners)
+        cube.random_edge_orientation(_U_edges)
+        cube.apply_algorithm("R U\' R\'")
+    elif step == "Petrus2x2x3":
+        corners, edges = parse_pieces_input("U R F | U R F")
+        cube.random_permutation(corners, edges)
+        cube.random_corner_orientation(corners)
+        cube.random_edge_orientation(edges)
+    elif step == "PetrusEO":
+        corners, edges = parse_pieces_input("U F | U F")
+        cube.random_permutation(corners, edges)
+        cube.random_corner_orientation(corners)
+        cube.random_edge_orientation(edges)
     else:
         raise ValueError("Could not recognise the given step.")
 

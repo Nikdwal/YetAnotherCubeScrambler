@@ -24,7 +24,8 @@ class Interpreter:
             "badedges" : lambda n      : self._cube.flip_n_edges(int(n)),
             "ocll"     : lambda case   : scramble_commands.twist_ll_corners(self._cube, case),
             "moves"    : lambda alg    : self._cube.apply_algorithm(alg),
-            "randauf"  : lambda dummy  : self._cube.randomAUF()
+            "randauf"  : lambda dummy  : self._cube.randomAUF(),
+            "file"     : lambda file   : Interpreter(file, self._cube).execute_program()
         }
 
     def execute_program(self):
