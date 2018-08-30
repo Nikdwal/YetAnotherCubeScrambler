@@ -278,3 +278,14 @@ class Cube:
             else:
                 raise ValueError("Invalid algorithm: " + alg)
             i = start_next_move
+
+    def orient_U_corners(self):
+        U_corners = self._clockwise_corner_order["U"]
+        num_twists = 0
+        for corner_location in U_corners:
+            corner = self.corners[corner_location]
+            t = corner.colors.index("U" if "U" in corner.colors else "D")
+            corner.rotate_clockwise((3 - t) % 3)
+            num_twists = num_twists + t
+        # avoid CO parity
+        self.corners["DFR"].rotate_clockwise((3 - num_twists) % 3)

@@ -137,6 +137,7 @@ def set_step(cube : Cube, step : str):
 
 
 def twist_ll_corners(cube, possible_cases):
+    cube.orient_U_corners()
     case_name = random.choice(possible_cases.split(" "))
     if case_name.lower() == "t":
         cube.corners["ULB"].rotate_clockwise(1)
