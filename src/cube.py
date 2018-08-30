@@ -261,6 +261,7 @@ class Cube:
         alg = alg.replace(" ", "")
         i = 0
         while i < len(alg):
+            start_next_move = len(alg)
             for j in range(i+1, len(alg)):
                 if alg[j].isalpha():
                     start_next_move = j

@@ -1,0 +1,6 @@
+orient UFR UBR UFL |
+[
+moves F R' F' R
+OR
+moves R B U B' R'
+]

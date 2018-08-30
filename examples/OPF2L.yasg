@@ -1,0 +1,6 @@
+# Do a conjugated J perm to swap the UFR and DFR corners
+moves R2 U R' F' R U R' U' R' F R2 U' R' U' R'
+
+orient UFR DFR | 
+permute U | U FR
+

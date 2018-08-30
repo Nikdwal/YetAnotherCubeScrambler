@@ -15,13 +15,16 @@ class Interpreter:
         # Remove the comments on all the lines, as well as any double or leading whitespaces
         for i in range(len(self._program)):
             self._program[i] = re.sub(r'#.*','',self._program[i].lstrip()).replace("  ", " ").replace("\n","")
+        self._program = [line for line in self._program if line and not line.isspace()]
 
         self._commands = {
-            "permute"  : lambda args : scramble_commands.permute(self._cube, args),
-            "orient"   : lambda args : scramble_commands.orient(self._cube, args),
-            "step"     : lambda args : scramble_commands.set_step(self._cube, args),
-            "badedges" : lambda args : self._cube.flip_n_edges(int(args)),
-            "ocll"     : lambda args : scramble_commands.twist_ll_corners(self._cube, args)
+            "permute"  : lambda pieces : scramble_commands.permute(self._cube, pieces),
+            "orient"   : lambda pieces : scramble_commands.orient(self._cube, pieces),
+            "step"     : lambda step   : scramble_commands.set_step(self._cube, step),
+            "badedges" : lambda n      : self._cube.flip_n_edges(int(n)),
+            "ocll"     : lambda case   : scramble_commands.twist_ll_corners(self._cube, case),
+            "moves"    : lambda alg    : self._cube.apply_algorithm(alg),
+            "randauf"  : lambda dummy  : self._cube.randomAUF()
         }
 
     def execute_program(self):
@@ -62,14 +65,13 @@ class Interpreter:
 
     def _execute_regular_command(self):
         words = [word for word in self._program[self._program_counter].split(" ") if word]
-        if words:
-            keyword = words[0].lower()
-            args    = " ".join(words[1:])
-            try:
-                # call the corresponding command
-                self._commands[keyword](args)
-            except KeyError:
-                raise ValueError("Line " + str(self._program_counter + 1) + ": Command " + keyword + " not found.")
+        keyword = words[0].lower()
+        args    = " ".join(words[1:])
+        try:
+            # call the corresponding command
+            self._commands[keyword](args)
+        except KeyError:
+            raise ValueError("Line " + str(self._program_counter + 1) + ": Command " + keyword + " not found.")
         self._program_counter += 1
 
 
