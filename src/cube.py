@@ -51,6 +51,23 @@ class Cube:
     corner_locations = ["ULB", "UBR", "URF", "UFL", "DBL", "DRB", "DFR", "DLF"]
     edge_locations = ["UB", "UR", "UF", "UL", "DB", "DR", "DF", "DL", "FL", "FR", "BL", "BR"]
 
+    _clockwise_corner_order = {
+        "U" : ["URF", "UFL", "ULB", "UBR"],
+        "D" : ["DLF", "DFR", "DRB", "DBL"],
+        "R" : ["URF", "UBR", "DRB", "DFR"],
+        "L" : ["ULB", "UFL", "DLF", "DBL"],
+        "F" : ["UFL", "URF", "DFR", "DLF"],
+        "B" : ["UBR", "ULB", "DBL", "DRB"]
+    }
+    _clockwise_edge_order = {
+        "U" : ["UB", "UR", "UF", "UL"],
+        "D" : ["DF", "DR", "DB", "DL"],
+        "R" : ["UR", "BR", "DR", "FR"],
+        "L" : ["UL", "FL", "DL", "BL"],
+        "F" : ["UF", "FR", "DF", "FL"],
+        "B" : ["UB", "BL", "DB", "BR"]
+    }
+
     # create a solved cube
     def __init__(self):
         # dictionary with the location as the key and the colours as the value
@@ -211,10 +228,52 @@ class Cube:
             self.corners[U_corners[i]] = prev_corners[i - num_turns]
             self.edges[U_edges[i]] = prev_edges[i - num_turns]
 
+    def _cycle_pieces_on_face(self, corners_cw, edges_cw, num_turns=1):
+        prev_corners = [self.corners[c] for c in corners_cw]
+        prev_edges = [self.edges[e] for e in edges_cw]
+        for i in range(4):
+            self.corners[corners_cw[i]] = prev_corners[i - num_turns]
+            self.edges[edges_cw[i]] = prev_edges[i - num_turns]
+
+    def _twist_corners_alternating(self, corners_cw):
+        # assume that a single turn on a solved cube twists the first corner location by two clockwise turns
+        i = 2
+        for corner in corners_cw:
+            self.corners[corner].rotate_clockwise(i)
+            i = (2*i) % 3 # pattern: 2 1 2 1 2 ...
+
+    def move_layer(self, layer, num_turns = 1):
+        corners = Cube._clockwise_corner_order[layer]
+        edges   = Cube._clockwise_edge_order[layer]
+        self._cycle_pieces_on_face(corners, edges, num_turns)
+        if layer in "RFLB":
+            if num_turns % 2 == 1:
+                self._twist_corners_alternating(corners)
+            if layer in "FB" and num_turns % 2 == 1:
+                for edge in edges:
+                    self.edges[edge].flip()
+
+
     def randomAUF(self):
         self.Umove(int(random.uniform(0,4)))
 
-
-
-
-
+    def apply_algorithm(self, alg : str):
+        alg = alg.replace(" ", "")
+        i = 0
+        while i < len(alg):
+            for j in range(i+1, len(alg)):
+                if alg[j].isalpha():
+                    start_next_move = j
+                    break
+            if start_next_move <= i:
+                start_next_move = len(alg)
+            move = alg[i:start_next_move]
+            if len(move) == 1:
+                self.move_layer(move)
+            elif move[-1] == "2":
+                self.move_layer(move[0], 2)
+            elif move[-1] == "\'":
+                self.move_layer(move[0], 3)
+            else:
+                raise ValueError("Invalid algorithm: " + alg)
+            i = start_next_move
