@@ -193,6 +193,7 @@ class Cube:
     # flip exacly n edges of this cube randomly
     # @param edges:   the edges that should be scrambled
     def flip_n_edges(self, edge_locations, n):
+        n = int(n)
         if n % 2 != 0:
             raise ValueError("Cannot flip an odd number of edges.")
         flipped_edges = random.sample(edge_locations, n)

@@ -13,6 +13,9 @@ def parse_pieces_same_type(pieces, correct_notation, default_pieces):
     pieces = pieces.split(" ")
     scrambled_pieces = set([])
     for piece_symbol in pieces:
+        if not piece_symbol:
+            # this is a blank
+            continue
         if len(piece_symbol) == 1:
             # The user wants to scramble the entire layer. Add all the pieces in this layer
             scrambled_pieces.update([piece for piece in default_pieces if piece_symbol[0] in piece])
