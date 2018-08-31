@@ -1,7 +1,6 @@
 **YASG**: Yet Another Scramble Generator
 -------------------
 
-<div style="text-align:center"></div
 
 ![screenshot](screenshot.png)
 
@@ -197,7 +196,7 @@ YASG files are a slightly more complicated, but also more versatile, method for 
 
 YASG files are programs you can write in a simple text editor like Notepad or vim. They are what sets YASG apart from other scramblers. You can specify the cube state at such a granular level that virtually every subset of a subset of cases can be programmed in YASG.
 
-The following YASG program that illustrates this. It generates ZZLL cases with a Pi corner orientation and one of two corner permutation cases.
+The following YASG program illustrates this. It generates ZZLL cases with a Pi corner orientation and one of two corner permutation cases.
 ```
 # permute two adjacent corners with a T perm
 moves R U R' U' R' F R2 U' R' U' R U R' F'
