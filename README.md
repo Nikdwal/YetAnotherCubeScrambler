@@ -41,19 +41,27 @@ A full list of options can be obtained by running the program with the ```-h``` 
 This is by far the most useful flag.. Many substeps are supported, including, but not limited to, OLL, PLL, COLL, EPLL, SB, ZZF2L, LS, EJLS etc. Use "help" (`-h` flag or help button) for an exhaustive list.
 
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=R2D'R2F2U'F2DR2B2ULR'U2L'R')
+
 </td><td>
+  
 &nbsp; ```-s PLL``` or ```--step=PLL```
+
 </td></tr></table>
 
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'L2U2F2R2U'L2B2L'R'U'R'UF2L')
+
 </td><td>
+  
 &nbsp; ```-s ZZLS``` or ```--step=ZZLS```
+
 </td></tr></table>
 
-
 <br>
+
 ### ```-p```, ```--permute ``` and ```-o```, ```--disorient```
 
 Specify the corners and edges that can be disoriented or permuted. This exists just in case any substep isn't supported yet. You can either specify specific pieces or an entire layer. The syntax is ```-p "corners | edges"``` (or something other than ```-p```).
@@ -67,78 +75,96 @@ Note that there is not guarantee that these pieces **will** be disoriented or pe
 
 <u>ZZ Last Slot scrambler:</u>
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U2R2D2L2D'B2DL2B2L'B2D2R'U2R'U'F2)
+
 </td><td>
+  
 &nbsp; ```--disorient "U DFR | " --permute "U DFR | U FR"```
-<br>
+
 This disorients the corners in the U layer and the DFR corner, but it doesn't disorient any of the edges. It permutes the U-layer and DFR corners and the FR edge.
-<br>
-*example result:* F2 U2 R2 D2 L2 D' B2 D L2 B2 L' B2 D2 R' U2 R' U' F2
+
 </td></tr></table>
 
 
 <u>F2L scrambler:</ul>
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U'R2U2L2U2F2D'F2LU2R'FRUR2D'U'B2L2)
+
 </td><td>
+
 &nbsp; ```--permute "all | U FR FL BR BL" --disorient "all | U FR FL BR BL"```.
-<br>
+
 This is basically the same spiel. Note that you can group the U layer edges as "U" but you can't group the E-layer edges as E.
+
 </td></tr></table>
 
 
-
 <br>
+
 ### &nbsp; ```-c```, ```--ocll```
 
 This forces a specific corner case for the last layer. You can enter a single OCLL case or a list in quotation marks, in which case it will choose one randomly. The names of these OCLL cases are U, T, L, H, Pi (or Bruno), S (or Sune), and AS (or Antisune). You should probably use this in combination with other options such as ```-s COLL```. Think of it as generating a scramble and twisting the corners at the end.
 
 
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=B2L2DU2L2D2U'B2DBU'R'UL2F2L2RB'U2)
+
 </td><td>
+  
 &nbsp; ```-s CMLL -c "H Pi"```
-<br>or equivalently<br>
+
+or equivalently
+
 &nbsp; ```-step CMLL -ocll "H Pi"```
+
 </td></tr></table>
 
 
-
 <br>
+
 ### ```-e```, ```--badedges```
 
 This is made specifically with ZZ users in mind. It generates a scramble with an exact number of bad edges.
 
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=D'F2DR2UF2U2B2UB2F'L'R2U2B2LDB2U2B'F')
+
 </td><td>
+  
 &nbsp; ```-e 12``` or ```--badedges 12```
+
 </td></tr></table>
 
 
-
 <br>
+
 ### ```-a```, ```--auf```
 
 This applies a random AUF at the end if it is not already included in options like ```--step``` or ```--permute```. Pretty self-explanatory.
 
-
-
 <br>
+
 ### ```--pre```/```--premoves```, ```--post```/```--postmoves```
 
 This produces that a scramble that is equivalent to doing the premoves, then applying the scramble as defined by the other options, and then applying the postmoves.
 
 <u> Winter Variation scrambler</u> (same as using ```--step WV```)
 <table><tr><td width=110px>
+  
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'B2UL2U2L2U2F2U'RB2R'B2DF2L2R)
+
 </td><td>
+  
 &nbsp; ```--step OCLL --post "R U R'" --auf```
+
 </td></tr></table>
 
-
-
 <br>
+
 ### ```-f```, ```--file```
 
 This generates a scramble as specified by a given YASG file. Make sure to type the entire file name and path to the file. Writing YASG files is a whole section in and of itself, but it is very similar to using options.
