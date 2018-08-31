@@ -1,6 +1,8 @@
 **YASG**: Yet Another Scramble Generator
 -------------------
 
+<div style="text-align:center"></div
+
 ![screenshot](screenshot.png)
 
 YASG is a program that can generate scramble algorithms for a variety of different methods and substeps to solve the Rubik's Cube. Its main selling point is its support for very specific custom scramble specifications.
@@ -8,6 +10,18 @@ YASG is a program that can generate scramble algorithms for a variety of differe
 The command line version of this program simply prints out a scramble and exits, which makes it highly suitable as a plug-in for building puzzle timers. The graphical version is mostly a wrapper for the command line program.
 
 Feel free to contact me for any questions. My contact details are listed on my GitHub profile.
+
+-----------------------------
+
+Skip to sections
+
+1. [Usage overview](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#usage-overview)
+
+2. [Installing and running](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#installing-and-running-the-program)
+
+3. [Custom scrambles by using options](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#method-1-for-custom-scrambles-options)
+
+4. [Custom scrambles by writing YASG files](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#method-2-for-custom-scrambles-yasg-files)
 
 ## Usage Overview
 
