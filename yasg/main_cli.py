@@ -56,10 +56,10 @@ def main():
 
     if options.ocll:
         scramble_commands.twist_ll_corners(cube, options.ocll)
-    if options.auf:
-        cube.randomAUF()
     if options.post_moves:
         cube.apply_algorithm(options.post_moves)
+    if options.auf:
+        cube.randomAUF()
 
     print(scramble.generate_state(str(cube)))
 

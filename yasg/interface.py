@@ -34,7 +34,7 @@ def show_help():
     text.insert(END,
                 "To generate a custom scramble, type in some of the options below to generate a custom scramble. You don\'t have "
                 "to type in anything to get a completely random state.\n\n"
-                "You can find a tutorial on the GitHub page for YASG (Yet Another Scramble Generator)\n\n\n")
+                "You can find a tutorial on the GitHub page for YASG: https://github.com/Nikdwal/YetAnotherScrambleGenerator\n\n\n")
     text.insert(END, subprocess.check_output(["python", "main_cli.py", "--help"]))
     text.config(state=DISABLED)
     text.pack()
