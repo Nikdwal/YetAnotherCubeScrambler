@@ -15,13 +15,13 @@ Feel free to contact me for any questions. My contact details are listed on my G
 
 Skip to sections
 
-1. [Usage overview](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#usage-overview)
+1. [Usage overview](#usage-overview)
 
-2. [Installing and running](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#installing-and-running-the-program)
+2. [Installing and running](#installing-and-running-the-program)
 
-3. [Custom scrambles by using options](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#method-1-for-custom-scrambles-options)
+3. [Custom scrambles by using options](#method-1-for-custom-scrambles-options)
 
-4. [Custom scrambles by writing YASG files](https://github.com/Nikdwal/YetAnotherScrambleGenerator/blob/master/README.md#method-2-for-custom-scrambles-yasg-files)
+4. [Custom scrambles by writing YASG files](#method-2-for-custom-scrambles-yasg-files)
 
 ## Usage Overview
 
