@@ -4,6 +4,8 @@ YASG is a program that can generate scrambles for a variety of different methods
 
 The command line version of this program simply prints out a scramble and exits, which makes it highly suitable as a plug-in for building puzzle timers.
 
+Feel free to contact me for any questions. My contact details are listed on my GitHub profile.
+
 ## Overview
 
 YASG was designed to be a command line program, but there is a minimal graphical wrapper for it.
@@ -24,7 +26,7 @@ You can [install these with Pip](https://www.youtube.com/watch?v=jnpC_Ib_lbc).
 Once you have everything installed, you can download this entire package and open the file ```yasg/yasg_gui.py``` with Python.
 Run ```yasg/yasg_cli.py``` instead if you want to use the command line version.
 
-## Options
+## Method \#1 for custom scrambles: Options
 The options are what you type in the text box if you want a custom scramble type.
 If you use the command line version instead, you probably already know how they work.
 
@@ -59,7 +61,7 @@ This is by far the most useful flag.. Many substeps are supported, including, bu
 
 or equivalently
 
-&nbsp; ```--orient "corners | edges"``` and ```--permute "corners | edges"```
+&nbsp; ```--disorient "corners | edges"``` and ```--permute "corners | edges"```
 
 Specify the corners and edges that can be disoriented or permuted. This exists just in case any substep isn't supported yet. You can either specify specific pieces or an entire (outer) layer.
 
@@ -67,12 +69,13 @@ If you don't use this option, any piece may be disoriented or permuted, unless y
 If you use the option, but leave the field for the corners (or edges) blank, none of the corners (or edges, respectively) will be disoriented or permuted.
 You can also write ```all``` as a shorthand for all corners or all edges.
 
+Note that there is not guarantee that these pieces **will** be disoriented or permuted. All that is known is that they **could** be.
 ##### *examples*
 <sub>(This is purely for illustrative purposes. You can just use the ```-s``` flag for common subsets.)</sub>
 
 <u>ZZ Last Slot scrambler:</u>
 
-&nbsp; ```--orient "U DFR | " --permute "U DFR | U FR"```
+&nbsp; ```--disorient "U DFR | " --permute "U DFR | U FR"```
 
 This disorients the corners in the U layer and the DFR corner, but it doesn't disorient any of the edges. It permutes the U-layer and DFR corners and the FR edge.
 
@@ -83,7 +86,7 @@ This disorients the corners in the U layer and the DFR corner, but it doesn't di
 
 <u>F2L scrambler:</ul>
 
-&nbsp; ```--permute "all | U FR FL BR BL" --orient "all | U FR FL BR BL"```.
+&nbsp; ```--permute "all | U FR FL BR BL" --disorient "all | U FR FL BR BL"```.
 
 This is basically the same spiel. Note that you can group the U layer edges as "U" but you can't group the E-layer edges as E.
 
@@ -95,7 +98,7 @@ This is basically the same spiel. Note that you can group the U layer edges as "
 
 &nbsp; ```-c OCLL, --ocll OCLL```
 
-This forces a specific corner case for the last layer. You can enter a single OCLL case or a list in quotation marks, in which case it will choose one randomly. The names of these OCLL cases are U, T, L, H, Pi (or Bruno), S (or Sune), and AS (or Antisune). You should probably use this in combination with other options such as ```-s COLL```
+This forces a specific corner case for the last layer. You can enter a single OCLL case or a list in quotation marks, in which case it will choose one randomly. The names of these OCLL cases are U, T, L, H, Pi (or Bruno), S (or Sune), and AS (or Antisune). You should probably use this in combination with other options such as ```-s COLL```. Think of it as generating a scramble and twisting the corners at the end.
 
 ##### *examples*
 &nbsp; ```-s CMLL -c "H Pi"``` or equivalently ```-step CMLL -ocll "H Pi"```
@@ -144,3 +147,80 @@ This produces that a scramble that is equivalent to doing the premoves, then app
 This generates a scramble as specified by a given YASG file. Make sure to type the entire file name and path to the file. Writing YASG files is a whole section in and of itself, but it is very similar to using options.
 
 ------------
+
+## Method \#2 for custom scrambles: YASG files
+
+YASG files are a slightly more complicated, but also more versatile, method for generating custom scrambles. They can do everything you can do with options, in addition to
+
+1. Specifying the order in which operations are performed (e.g. orient first, the permute)
+2. Choosing randomly between different commands (doing A 50% of the time and B the other 50% of the time)
+
+YASG files are programs you can write in a simple text editor like Notepad or vim. They are what sets YASG apart from other scramblers. You can specify the cube state at such a granular level that virtually every subset of a subset of cases can be programmed in YASG.
+
+The following YASG program that illustrates this. It generates ZZLL cases with a Pi corner orientation and one of two corner permutation cases.
+```
+# permute two adjacent corners with a T perm
+moves R U R' U' R' F R2 U' R' U' R U R' F'
+
+[
+# Do a U2 AUF. In this case it will be a cross COLL
+moves U2
+OR
+# Do nothing. In this case it will be a bars COLL
+]
+
+ocll Pi
+
+AUF
+# permute the edges, but keep them phased
+[
+moves R' U' R2 U R U R' U' R U R U' R U' R' # this is a Z perm
+OR
+moves R2 U2 R U2 R2 U2 R2 U2 R U2 R2 # H perm
+OR
+# do nothing
+]
+AUF
+```
+Other example programs can be found in the ```examples``` folder.
+
+As you can see, it is basically a very simplified programming language. Every line is either
+- a command with a similar effect as one of the options
+- a comment to clarifies to the reader what a line of code does (starting with ```#```)
+- a special token to define a list of alternatives
+
+### Commands
+Every command is the counterpart of one of the options. Commands are not case-sensitive, but options are. Use this table as a reference.
+
+| Command |Option |
+|-----------|-------|
+| ```step```    | ```--step``` ```-s```  |
+| ```permute```   | ```--permute``` ```-p``` |
+| ```disorient``` | ```--disorient``` ```-o``` |
+| ```moves```     | ```--pre```/```--premoves``` or ```--post```/```--postmoves``` |
+| ```ocll```      | ```--ocll``` ```-c``` |
+| ```auf```   | ```--auf``` ```-a``` |
+| ```file```      | ```--file``` ```-f```  |
+| ```badedges```  | ```--badedges``` ```-e``` |
+
+While options would be applied in a fixed order, the order in which commands are executed is defined by the author of the file. Obviously, the program is executed from top to bottom.
+
+Sometimes the order matters quite a bit. In particular, using ```step PLL``` doesn't always mean you get a PLL case after using it. It just applies the inverse of a random PLL algorithm to the cube.
+
+### Listing alternatives
+If you want to choose randomly between options A<sub>1</sub>, A<sub>2</sub>, ... A<sub>n</sub>, you can write.
+```
+[
+A1
+OR
+A2
+OR
+...
+OR
+An
+]
+```
+This should make a program that generates each A<sub>i</sub> exactly one n'th of the time. These A<sub>i</sub>'s can consist of an arbitrary number of lines (including zero), as long as there separated by ```OR``` lines.
+
+### Using YASG files
+You execute as YASG program by running YASG with the ```-f``` or ```--file``` option. If you want, you could call a YASG program within another YASG program.
