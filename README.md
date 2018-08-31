@@ -73,7 +73,7 @@ You can also write ```all``` as a shorthand for all corners or all edges.
 Note that there is not guarantee that these pieces **will** be disoriented or permuted. All that is known is that they **could** be.
 
 
-<u>ZZ Last Slot scrambler:</u>
+_ZZ Last Slot scrambler (same as ```--step ZZLS```)_
 <table><tr><td width=110px>
   
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U2R2D2L2D'B2DL2B2L'B2D2R'U2R'U'F2)
@@ -87,7 +87,7 @@ This disorients the corners in the U layer and the DFR corner, but it doesn't di
 </td></tr></table>
 
 
-<u>F2L scrambler:</ul>
+_F2L scrambler (same as ```--step F2L```)_
 <table><tr><td width=110px>
   
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U'R2U2L2U2F2D'F2LU2R'FRUR2D'U'B2L2)
@@ -152,7 +152,7 @@ This applies a random AUF at the end if it is not already included in options li
 
 This produces that a scramble that is equivalent to doing the premoves, then applying the scramble as defined by the other options, and then applying the postmoves.
 
-<u> Winter Variation scrambler</u> (same as using ```--step WV```)
+_Winter Variation scrambler (same as ```--step WV```)_
 <table><tr><td width=110px>
   
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'B2UL2U2L2U2F2U'RB2R'B2DF2L2R)
