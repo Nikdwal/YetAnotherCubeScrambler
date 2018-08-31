@@ -19,7 +19,7 @@ argbox = Entry(top, width=60)
 top.add(argbox)
 
 def generate_scramble():
-    scramble_lbl.config(text=subprocess.check_output(["python", "main_cli.py"] + shlex.split(argbox.get())))
+    scramble_lbl.config(text=subprocess.check_output(["python", "yasg_cli.py"] + shlex.split(argbox.get())))
     scramble_lbl.pack()
 
 def show_help():
@@ -35,7 +35,7 @@ def show_help():
                 "To generate a custom scramble, type in some of the options below to generate a custom scramble. You don\'t have "
                 "to type in anything to get a completely random state.\n\n"
                 "You can find a tutorial on the GitHub page for YASG: https://github.com/Nikdwal/YetAnotherScrambleGenerator\n\n\n")
-    text.insert(END, subprocess.check_output(["python", "main_cli.py", "--help"]))
+    text.insert(END, subprocess.check_output(["python", "yasg_cli.py", "--help"]))
     text.config(state=DISABLED)
     text.pack()
 

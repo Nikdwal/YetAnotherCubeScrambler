@@ -21,8 +21,8 @@ You need to have Python (version >= 3) installed to run this program. You also n
 
 You can [install these with Pip](https://www.youtube.com/watch?v=jnpC_Ib_lbc).
 
-Once you have everything installed, you can download this entire package and open the file ```yasg/interface.py``` with Python.
-Run ```yasg/main_cli.py``` instead if you want to use the command line version.
+Once you have everything installed, you can download this entire package and open the file ```yasg/yasg_gui.py``` with Python.
+Run ```yasg/yasg_cli.py``` instead if you want to use the command line version.
 
 ## Options
 The options are what you type in the text box if you want a custom scramble type.
