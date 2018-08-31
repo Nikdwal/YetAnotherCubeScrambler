@@ -1,5 +1,8 @@
 **YASG**: Yet Another Scramble Generator
 -------------------
+
+![screenshot](screenshot.png)
+
 YASG is a program that can generate scramble algorithms for a variety of different methods and substeps to solve the Rubik's Cube. Its main selling point is its support for custom scramble specifications.
 
 The command line version of this program simply prints out a scramble and exits, which makes it highly suitable as a plug-in for building puzzle timers.
@@ -41,21 +44,21 @@ A full list of options can be obtained by running the program with the ```-h``` 
 This is by far the most useful flag.. Many substeps are supported, including, but not limited to, OLL, PLL, COLL, EPLL, SB, ZZF2L, LS, EJLS etc. Use "help" (`-h` flag or help button) for an exhaustive list.
 
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=R2D'R2F2U'F2DR2B2ULR'U2L'R')
 
 </td><td>
-  
+
 &nbsp; ```-s PLL``` or ```--step=PLL```
 
 </td></tr></table>
 
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'L2U2F2R2U'L2B2L'R'U'R'UF2L')
 
 </td><td>
-  
+
 &nbsp; ```-s ZZLS``` or ```--step=ZZLS```
 
 </td></tr></table>
@@ -75,11 +78,11 @@ Note that there is not guarantee that these pieces **will** be disoriented or pe
 
 _ZZ Last Slot scrambler (same as ```--step ZZLS```)_
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U2R2D2L2D'B2DL2B2L'B2D2R'U2R'U'F2)
 
 </td><td>
-  
+
 &nbsp; ```--disorient "U DFR | " --permute "U DFR | U FR"```
 
 This disorients the corners in the U layer and the DFR corner, but it doesn't disorient any of the edges. It permutes the U-layer and DFR corners and the FR edge.
@@ -89,7 +92,7 @@ This disorients the corners in the U layer and the DFR corner, but it doesn't di
 
 _F2L scrambler (same as ```--step F2L```)_
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U'R2U2L2U2F2D'F2LU2R'FRUR2D'U'B2L2)
 
 </td><td>
@@ -109,11 +112,11 @@ This forces a specific corner case for the last layer. You can enter a single OC
 
 
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=B2L2DU2L2D2U'B2DBU'R'UL2F2L2RB'U2)
 
 </td><td>
-  
+
 &nbsp; ```-s CMLL -c "H Pi"```
 
 or equivalently
@@ -130,11 +133,11 @@ or equivalently
 This is made specifically with ZZ users in mind. It generates a scramble with an exact number of bad edges.
 
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=D'F2DR2UF2U2B2UB2F'L'R2U2B2LDB2U2B'F')
 
 </td><td>
-  
+
 &nbsp; ```-e 12``` or ```--badedges 12```
 
 </td></tr></table>
@@ -154,11 +157,11 @@ This produces that a scramble that is equivalent to doing the premoves, then app
 
 _Winter Variation scrambler (same as ```--step WV```)_
 <table><tr><td width=110px>
-  
+
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'B2UL2U2L2U2F2U'RB2R'B2DF2L2R)
 
 </td><td>
-  
+
 &nbsp; ```--step OCLL --post "R U R'" --auf```
 
 </td></tr></table>
