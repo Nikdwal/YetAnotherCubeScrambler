@@ -1,4 +1,4 @@
-orient UFR UBR UFL |
+disorient UFR UBR UFL |
 [
 moves F R' F' R
 OR

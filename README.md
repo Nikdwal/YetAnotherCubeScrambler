@@ -1,6 +1,6 @@
 **YASG**: Yet Another Scramble Generator
 -------------------
-YASG is a program that can generate scrambles for a variety of different methods and substeps to solve the Rubik's Cube. Its main selling point is its support for custom scramble specifications.
+YASG is a program that can generate scramble algorithms for a variety of different methods and substeps to solve the Rubik's Cube. Its main selling point is its support for custom scramble specifications.
 
 The command line version of this program simply prints out a scramble and exits, which makes it highly suitable as a plug-in for building puzzle timers.
 
@@ -36,124 +36,122 @@ Note that the order in which you use them *doesn't matter*. Using ```-x -y``` is
 
 A full list of options can be obtained by running the program with the ```-h``` or ```--help``` flag for the command line version, or by clicking the help button on the graphical version. A tutorial on how to use each of them is found below.
 
-------------
-
-&nbsp; ```-s STEP``` or ```--step STEP```
+### ```-s```, ```--step```
 
 This is by far the most useful flag.. Many substeps are supported, including, but not limited to, OLL, PLL, COLL, EPLL, SB, ZZF2L, LS, EJLS etc. Use "help" (`-h` flag or help button) for an exhaustive list.
 
-##### *examples*
-&nbsp; ```-s PLL``` or ```--step=PLL```
-
-*example result:* R2 D' R2 F2 U' F2 D R2 B2 U L R' U2 L' R'
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=R2D'R2F2U'F2DR2B2ULR'U2L'R')
+</td><td>
+&nbsp; ```-s PLL``` or ```--step=PLL```
+</td></tr></table>
 
-&nbsp; ```-s ZZLS``` or ```--step=ZZLS```
-
-*example result:* L2 D' L2 U2 F2 R2 U' L2 B2 L' R' U' R' U F2 L'
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'L2U2F2R2U'L2B2L'R'U'R'UF2L')
+</td><td>
+&nbsp; ```-s ZZLS``` or ```--step=ZZLS```
+</td></tr></table>
 
--------------
 
-&nbsp; ```-o "corners | edges"``` and ```-p "corners | edges"```
+<br>
+### ```-p```, ```--permute ``` and ```-o```, ```--disorient```
 
-or equivalently
-
-&nbsp; ```--disorient "corners | edges"``` and ```--permute "corners | edges"```
-
-Specify the corners and edges that can be disoriented or permuted. This exists just in case any substep isn't supported yet. You can either specify specific pieces or an entire (outer) layer.
+Specify the corners and edges that can be disoriented or permuted. This exists just in case any substep isn't supported yet. You can either specify specific pieces or an entire layer. The syntax is ```-p "corners | edges"``` (or something other than ```-p```).
 
 If you don't use this option, any piece may be disoriented or permuted, unless you also use another option that disorients or permutes pieces.
 If you use the option, but leave the field for the corners (or edges) blank, none of the corners (or edges, respectively) will be disoriented or permuted.
 You can also write ```all``` as a shorthand for all corners or all edges.
 
 Note that there is not guarantee that these pieces **will** be disoriented or permuted. All that is known is that they **could** be.
-##### *examples*
-<sub>(This is purely for illustrative purposes. You can just use the ```-s``` flag for common subsets.)</sub>
+
 
 <u>ZZ Last Slot scrambler:</u>
-
-&nbsp; ```--disorient "U DFR | " --permute "U DFR | U FR"```
-
-This disorients the corners in the U layer and the DFR corner, but it doesn't disorient any of the edges. It permutes the U-layer and DFR corners and the FR edge.
-
-*example result:* F2 U2 R2 D2 L2 D' B2 D L2 B2 L' B2 D2 R' U2 R' U' F2
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U2R2D2L2D'B2DL2B2L'B2D2R'U2R'U'F2)
+</td><td>
+&nbsp; ```--disorient "U DFR | " --permute "U DFR | U FR"```
+<br>
+This disorients the corners in the U layer and the DFR corner, but it doesn't disorient any of the edges. It permutes the U-layer and DFR corners and the FR edge.
+<br>
+*example result:* F2 U2 R2 D2 L2 D' B2 D L2 B2 L' B2 D2 R' U2 R' U' F2
+</td></tr></table>
 
 
 <u>F2L scrambler:</ul>
-
-&nbsp; ```--permute "all | U FR FL BR BL" --disorient "all | U FR FL BR BL"```.
-
-This is basically the same spiel. Note that you can group the U layer edges as "U" but you can't group the E-layer edges as E.
-
-*example result*: F2 U' R2 U2 L2 U2 F2 D' F2 L U2 R' F R U R2 D' U' B2 L2
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=F2U'R2U2L2U2F2D'F2LU2R'FRUR2D'U'B2L2)
+</td><td>
+&nbsp; ```--permute "all | U FR FL BR BL" --disorient "all | U FR FL BR BL"```.
+<br>
+This is basically the same spiel. Note that you can group the U layer edges as "U" but you can't group the E-layer edges as E.
+</td></tr></table>
 
---------
 
-&nbsp; ```-c OCLL, --ocll OCLL```
+
+<br>
+### &nbsp; ```-c```, ```--ocll```
 
 This forces a specific corner case for the last layer. You can enter a single OCLL case or a list in quotation marks, in which case it will choose one randomly. The names of these OCLL cases are U, T, L, H, Pi (or Bruno), S (or Sune), and AS (or Antisune). You should probably use this in combination with other options such as ```-s COLL```. Think of it as generating a scramble and twisting the corners at the end.
 
-##### *examples*
-&nbsp; ```-s CMLL -c "H Pi"``` or equivalently ```-step CMLL -ocll "H Pi"```
 
-*example result:* B2 L2 D U2 L2 D2 U' B2 D B U' R' U L2 F2 L2 R B' U2
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=B2L2DU2L2D2U'B2DBU'R'UL2F2L2RB'U2)
+</td><td>
+&nbsp; ```-s CMLL -c "H Pi"```
+<br>or equivalently<br>
+&nbsp; ```-step CMLL -ocll "H Pi"```
+</td></tr></table>
 
 
 
-----------
-&nbsp; ```-e``` or ```--badedges```
+<br>
+### ```-e```, ```--badedges```
 
 This is made specifically with ZZ users in mind. It generates a scramble with an exact number of bad edges.
 
-##### *examples*
-&nbsp; ```-e 12``` or ```--badedges 12```
-
-*example result:* B2 L2 D U2 L2 D2 U' B2 D B U' R' U L2 F2 L2 R B' U2
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=D'F2DR2UF2U2B2UB2F'L'R2U2B2LDB2U2B'F')
+</td><td>
+&nbsp; ```-e 12``` or ```--badedges 12```
+</td></tr></table>
 
-------------
-&nbsp; ```-a``` or ```--auf```
+
+
+<br>
+### ```-a```, ```--auf```
 
 This applies a random AUF at the end if it is not already included in options like ```--step``` or ```--permute```. Pretty self-explanatory.
 
------------
-&nbsp; ```--pre``` or ```--premoves``` and ```--post``` or ```--postmoves```
+
+
+<br>
+### ```--pre```/```--premoves```, ```--post```/```--postmoves```
 
 This produces that a scramble that is equivalent to doing the premoves, then applying the scramble as defined by the other options, and then applying the postmoves.
 
-##### *examples*
 <u> Winter Variation scrambler</u> (same as using ```--step WV```)
-
-
-&nbsp; ```--step OCLL --post "R U R'" --auf```
-
-*example result:* L2 D2 R2 D B2 D' R2 B2 D B2 L' D L2 U L U2 F2
-
+<table><tr><td width=110px>
 ![image](http://cube.crider.co.uk/visualcube.php?fmt=svg&alg=L2D'B2UL2U2L2U2F2U'RB2R'B2DF2L2R)
+</td><td>
+&nbsp; ```--step OCLL --post "R U R'" --auf```
+</td></tr></table>
 
----------
-| ```-f PATH``` or ```--file PATH```
+
+
+<br>
+### ```-f```, ```--file```
 
 This generates a scramble as specified by a given YASG file. Make sure to type the entire file name and path to the file. Writing YASG files is a whole section in and of itself, but it is very similar to using options.
 
-------------
+
+
 
 ## Method \#2 for custom scrambles: YASG files
 
 YASG files are a slightly more complicated, but also more versatile, method for generating custom scrambles. They can do everything you can do with options, in addition to
 
-1. Specifying the order in which operations are performed (e.g. orient first, the permute)
-2. Choosing randomly between different commands (doing A 50% of the time and B the other 50% of the time)
+1. Specifying the order in which operations are performed (e.g. orient first, then permute)
+2. Choosing randomly between different commands (e.g. doing A 50% of the time and B the other 50% of the time)
 
 YASG files are programs you can write in a simple text editor like Notepad or vim. They are what sets YASG apart from other scramblers. You can specify the cube state at such a granular level that virtually every subset of a subset of cases can be programmed in YASG.
 
@@ -223,4 +221,4 @@ An
 This should make a program that generates each A<sub>i</sub> exactly one n'th of the time. These A<sub>i</sub>'s can consist of an arbitrary number of lines (including zero), as long as there separated by ```OR``` lines.
 
 ### Using YASG files
-You execute as YASG program by running YASG with the ```-f``` or ```--file``` option. If you want, you could call a YASG program within another YASG program.
+You execute as YASG program by running YASG with the ```-f``` or ```--file``` option or by clicking the file button. If you want, you could call a YASG program within another YASG program.
