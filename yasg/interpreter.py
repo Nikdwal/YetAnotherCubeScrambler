@@ -21,7 +21,7 @@ class Interpreter:
             "permutable" : lambda pieces : scramble_commands.permutable(self._cube, pieces),
             "orientable" : lambda pieces : scramble_commands.orientable(self._cube, pieces),
             "step"       : lambda step   : scramble_commands.set_step(self._cube, step),
-            "badedges"   : lambda n      : self._cube.flip_n_edges(int(n)),
+            "badedges"   : lambda n      : scramble_commands.n_bad_edges(self._cube, n),
             "ocll"       : lambda case   : scramble_commands.twist_ll_corners(self._cube, case),
             "moves"      : lambda alg    : self._cube.apply_algorithm(alg),
             "auf"        : lambda dummy  : self._cube.randomAUF(),

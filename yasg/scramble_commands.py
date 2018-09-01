@@ -54,6 +54,11 @@ def disorient(cb : Cube, disorient_args, buffer_args = " | "):
     cb.disorient_corners(corners, buffer_corners)
     cb.disorient_edges(edges, buffer_edges)
 
+def n_bad_edges(cb : Cube, args):
+    n = int(args)
+    cb.orient_edges(Cube.edge_locations, [])
+    cb.flip_n_edges(Cube.edge_locations, n)
+
 _U_corners  = parse_pieces_same_type("U", parse_corner_id, Cube.corner_locations)
 _U_edges    = parse_pieces_same_type("U", parse_edge_id, Cube.edge_locations)
 _LS_corners = parse_pieces_same_type("U DFR", parse_corner_id, Cube.corner_locations)

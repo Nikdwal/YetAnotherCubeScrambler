@@ -62,6 +62,9 @@ def main():
         if options.num_bad_edges:
             cube.flip_n_edges(Cube.edge_locations, int(options.num_bad_edges))
 
+    if options.num_bad_edges:
+        scramble_commands.n_bad_edges(cube, options.num_bad_edges)
+
     if options.deranged_pieces:
         if options.permutable_pieces:
             scramble_commands.derange(cube, options.deranged_pieces, options.permutable_pieces)
