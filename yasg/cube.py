@@ -303,11 +303,11 @@ class Cube:
     def edge_is_solved(self, location):
         return self.edges[location].oriented_color_order == location
 
-    def arrange(self, corners, edges):
+    def arrange(self, corners, edges, buffer_corners, buffer_edges):
         arranged_corner_locations = set(corners)
         arranged_edge_locations   = set(edges)
-        deranged_corner_locations = set()
-        deranged_edge_locations   = set()
+        deranged_corner_locations = set(buffer_corners)
+        deranged_edge_locations   = set(buffer_edges)
 
         # make an inverse map of self.corners and self.edges, i.e.
         # store the current location of the piece for each piece
@@ -318,7 +318,7 @@ class Cube:
         for location in Cube.edge_locations:
             edge_location_map[self.edges[location].oriented_color_order] = location
 
-        # Iterate through the corner/edge location you want to permute correcly and swap the
+        # Iterate through the corner/edge locations you want to permute correcly and swap the
         # piece that is in this spot with the piece that belongs there
         even_number_of_swaps = True
         for location in corners:
@@ -328,6 +328,10 @@ class Cube:
             spot_of_piece_that_belongs_here = corner_location_map[location]
             even_number_of_swaps = not even_number_of_swaps
             self._swap_corners(location, spot_of_piece_that_belongs_here)
+            # update the map
+            corner_location_map[self.corners[location].oriented_color_order] = location
+            corner_location_map[
+            self.corners[spot_of_piece_that_belongs_here].oriented_color_order] = spot_of_piece_that_belongs_here
 
             # We have disturbed a corner that wasn't specified by the user (although it was necessary)
             # Remember this for the parity check at the end
@@ -337,12 +341,15 @@ class Cube:
         # God copying this over is ugly.
         for location in edges:
             # check if already solved
-            if self.edge_is_solved():
+            if self.edge_is_solved(location):
                 continue
 
             spot_of_piece_that_belongs_here = edge_location_map[location]
             even_number_of_swaps = not even_number_of_swaps
             self._swap_edges(location, spot_of_piece_that_belongs_here)
+            # update the map
+            edge_location_map[self.edges[location].oriented_color_order] = location
+            edge_location_map[self.edges[spot_of_piece_that_belongs_here].oriented_color_order] = spot_of_piece_that_belongs_here
 
             # We have disturbed an edge that wasn't specified by the user (although it was necessary)
             # Remember this for the parity check at the end
@@ -366,11 +373,9 @@ class Cube:
                 i, j = tuple(random.sample(deranged_corner_locations, 2))
                 self._swap_corners(i, j)
 
-    def derange(self, corners, edges):
-        self.random_permutation(corners, edges)
+    def derange(self, corners, edges, buffer_corners, buffer_edges):
+        self.random_permutation(corners + buffer_corners, edges + buffer_edges)
         even_number_of_swaps = True
-        corners_can_be_deranged = True
-        edges_can_be_deranged = True
 
         # functions that determine if swapping two pieces would result in either of them being solved.
         can_swap_corners = lambda c1, c2 : c1 != self.corners[c2].oriented_color_order and c2 != self.corners[c1].oriented_color_order
@@ -381,46 +386,57 @@ class Cube:
         # i = the index within "pieces"
         # self_pieces = self.corners or self.edges
         # return: true iff you swapped a piece
-        def derange_piece(pieces, i, swap_pieces, can_swap_pieces):
-            for j in range(1, len(pieces)):
-                other_location = pieces[(i + j) % len(pieces)]
+        def derange_piece(pieces, i, swap_pieces, can_swap_pieces, buffer):
+            # Iterate through the pieces that have to be deranged to find a swap.
+            # If we can't find a piece to swap with, we continue iterating through the buffer.
+            for j in range(1, len(pieces) + len(buffer)):
+                if j < len(pieces):
+                    other_location = pieces[(i + j) % len(pieces)]
+                else:
+                    other_location = buffer[j - len(pieces)]
                 if can_swap_pieces(pieces[i], other_location):
                     swap_pieces(pieces[i], other_location)
                     return True # swapped a piece
             # If this piece is solved and you can't swap this with any piece with any other piece,
-            # you can't derange all the given pieces while leaving the other ones untouched.
+            # you can't derange all the given pieces while leaving the other ones untouched,
+            # even using the buffer
             return False
 
         # Some pieces might happen to be solved, even after permuting them randomly.
         # Try to swap them with another piece.
         for i in range(len(corners)):
             if self.corner_is_solved(corners[i]):
-                piece_was_swapped = derange_piece(corners, i, self._swap_corners, can_swap_corners)
+                piece_was_swapped = derange_piece(corners, i, self._swap_corners, can_swap_corners, buffer_corners)
                 if piece_was_swapped:
                     even_number_of_swaps = not even_number_of_swaps
-                else:
-                    corners_can_be_deranged = False
+
         for i in range(len(edges)):
             if self.edge_is_solved(edges[i]):
-                piece_was_swapped = derange_piece(edges, i, self._swap_edges, can_swap_edges)
+                piece_was_swapped = derange_piece(edges, i, self._swap_edges, can_swap_edges, buffer_edges)
                 if piece_was_swapped:
                     even_number_of_swaps = not even_number_of_swaps
-                else:
-                    edges_can_be_deranged = False
 
+        # Try to make up for an odd number of swaps. There are many methods that may succeed.
+        # If a method failed, go to a less preferable method.
         if not even_number_of_swaps:
             # See if you can swap any corners (not necessarily solved ones)
             for i in range(len(corners)):
-                piece_was_swapped = derange_piece(corners, i, self._swap_corners, can_swap_corners)
+                piece_was_swapped = derange_piece(corners, i, self._swap_corners, can_swap_corners, buffer_corners)
                 if piece_was_swapped:
                     return
             # That failed. Maybe you could try edges
-            for i in range(len(corners)):
-                piece_was_swapped = derange_piece(corners, i, self._swap_corners, can_swap_corners)
+            for i in range(len(edges)):
+                piece_was_swapped = derange_piece(edges, i, self._swap_edges, can_swap_edges, buffer_edges)
                 if piece_was_swapped:
                     return
-            # It turns out the given pieces can't be deranged with an even number of swaps. Just swap two pieces randomly.
-            if len(corners) >= 2:
+            # That failed as well. Just swap two buffer pieces randomly.
+            if len(buffer_corners) >= 2:
+                self._swap_corners(buffer_corners[0], buffer_corners[1])
+            elif len(buffer_edges) >= 2:
+                self._swap_edges(edges[0], edges[1])
+            # Even that failed. It turns out we can't derange the pieces with an even number of swaps.
+            # Just select two victims and swap those.
+            elif len(corners) >= 2:
                 self._swap_corners(corners[0], corners[1])
             else:
                 self._swap_edges(edges[0], edges[1])
@@ -436,7 +452,6 @@ class Cube:
         if num_flips % 2 != 0:
             # avoid parity
             self.edges[edges[-1]].flip()
-
 
     def orient_edges(self, edges):
         self._flip_edge_if(edges, lambda e : not e.is_oriented())
@@ -459,7 +474,8 @@ if __name__ == "__main__":
     # test
     import scramble
     cube = Cube()
-    cube.derange(["URF", "UBR"], ["UL", "UR"])
-    cube.arrange(["URF", "UBR"], [])
-    tperm = scramble.generate_state(str(cube))
-    print(tperm)
+    # cube.derange([], ["UR", "UL"], [], ["UB"])
+    cube.random_permutation(["URF", "UBR", "ULB", "UFL"], ["UF", "UB", "UR", "UL"])
+    cube.arrange(["URF", "UBR", "ULB", "UFL"], [], [], ["UF", "UB", "UR", "UL"])
+    perm = scramble.generate_state(str(cube))
+    print(perm)
