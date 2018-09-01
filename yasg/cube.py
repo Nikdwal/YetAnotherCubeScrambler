@@ -433,7 +433,7 @@ class Cube:
             if len(buffer_corners) >= 2:
                 self._swap_corners(buffer_corners[0], buffer_corners[1])
             elif len(buffer_edges) >= 2:
-                self._swap_edges(edges[0], edges[1])
+                self._swap_edges(buffer_edges[0], buffer_edges[1])
             # Even that failed. It turns out we can't derange the pieces with an even number of swaps.
             # Just select two victims and swap those.
             elif len(corners) >= 2:
@@ -497,7 +497,7 @@ class Cube:
         for corner_location in corners:
             corner = self.corners[corner_location]
             if corner.colors[num_twists] != corner.oriented_color_order[0]:
-                corner.rotate_clockwise[(- num_twists) % 3]
+                corner.rotate_clockwise((- num_twists) % 3)
                 return
         # See if we can twist two corners to get them all disoriented
         twistable_corners = [corner_location for corner_location in corners if corner.colors[(-num_twists)%3] != corner.oriented_color_order[0]]

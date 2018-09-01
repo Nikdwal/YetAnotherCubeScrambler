@@ -18,15 +18,20 @@ class Interpreter:
         self._program = [line for line in self._program if line and not line.isspace()]
 
         self._commands = {
-            "permute"   : lambda pieces : scramble_commands.permutable(self._cube, pieces),
-            "disorient" : lambda pieces : scramble_commands.orientable(self._cube, pieces),
-            "step"      : lambda step   : scramble_commands.set_step(self._cube, step),
-            "badedges"  : lambda n      : self._cube.flip_n_edges(int(n)),
-            "ocll"      : lambda case   : scramble_commands.twist_ll_corners(self._cube, case),
-            "moves"     : lambda alg    : self._cube.apply_algorithm(alg),
-            "auf"       : lambda dummy  : self._cube.randomAUF(),
-            "file"      : lambda file   : Interpreter(file, self._cube).execute_program()
+            "permutable" : lambda pieces : scramble_commands.permutable(self._cube, pieces),
+            "orientable" : lambda pieces : scramble_commands.orientable(self._cube, pieces),
+            "step"       : lambda step   : scramble_commands.set_step(self._cube, step),
+            "badedges"   : lambda n      : self._cube.flip_n_edges(int(n)),
+            "ocll"       : lambda case   : scramble_commands.twist_ll_corners(self._cube, case),
+            "moves"      : lambda alg    : self._cube.apply_algorithm(alg),
+            "auf"        : lambda dummy  : self._cube.randomAUF(),
+            "file"       : lambda file   : Interpreter(file, self._cube).execute_program(),
+            "orient"     : lambda args   : self._interpret_buffer_command(args, self._cube, scramble_commands.orient),
+            "disorient"  : lambda args   : self._interpret_buffer_command(args, self._cube, scramble_commands.disorient),
+            "arrange"    : lambda args   : self._interpret_buffer_command(args, self._cube, scramble_commands.arrange),
+            "derange"    : lambda args   : self._interpret_buffer_command(args, self._cube, scramble_commands.derange),
         }
+
 
     def execute_program(self):
         while self._program_counter < len(self._program):
@@ -39,6 +44,15 @@ class Interpreter:
             else:
                 # This is a regular single line command
                 self._execute_regular_command()
+
+
+    def _interpret_buffer_command(self, args : str, cube, scramble_command):
+        buffer_keyword = "buffer"
+        if buffer_keyword in args:
+            left_arg, right_arg = tuple(args.split(buffer_keyword, 1))
+            scramble_command(cube, left_arg, right_arg)
+        else:
+            scramble_command(cube, args)
 
     @staticmethod
     def _is_delimiter_of_alternatives(line):

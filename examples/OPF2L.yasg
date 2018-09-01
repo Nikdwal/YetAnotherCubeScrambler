@@ -1,6 +1,8 @@
-# Do a conjugated J perm to swap the UFR and DFR corners
-moves R2 U R' F' R U R' U' R' F R2 U' R' U' R'
+# Swap the UFR and DFR corner, and make up for and odd number of swaps by permuting the U layer edges
+derange UFR DFR | buffer | U
 
-disorient UFR DFR | 
-permute U | U FR
+# The new UFR and DFR corners are the only ones that can be disoriented
+orientable UFR DFR | 
 
+# swap the LL pieces and the FR edge around randomly
+permutable U | U FR

@@ -125,6 +125,7 @@ def set_step(cube : Cube, step : str):
     elif step in ["EJLS", "EJF2L"]:
         cube.random_permutation(_U_corners, _U_edges)
         cube.random_corner_orientation(_LS_corners)
+        cube.disorient_corners(["DFR"], _U_corners)
     elif step == "TTLL":
         cube.random_permutation(_LS_corners, _U_edges)
     elif step == "WV":

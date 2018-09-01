@@ -1,6 +1,8 @@
-disorient UFR UBR UFL |
+moves R U R'
 [
-moves F R' F' R
+disorient | UL FR 
+orientable UBL UFR DFR | 
 OR
-moves R B U B' R'
+disorient | UR FR
+orientable UBR UFR DFR | 
 ]

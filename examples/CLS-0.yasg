@@ -1,3 +1,8 @@
-permute U | U
-disorient U |
-moves R2 U R2 U R2 U2 R2
+# permute the LL randomly and give it a random corner orientation
+step ZBLL
+
+# swap the DFR and UFR corner and make up for an odd number of swaps by permuting the LL edges
+derange DFR UFR | buffer | U
+
+# put the new UFR corner (the corner piece of the F2L pair) anywhere
+AUF

@@ -1,0 +1,15 @@
+# Permute the last layer randomly. This isn't really necessary, but it doesn't hurt either.
+step PLL
+
+# disorient the right pieces
+[
+# L shape OLL:
+disorient U | UR UF
+OR
+# Line shape OLL:
+disorient U | UF UB
+OR
+# P shape OLL
+disorient UFR UBR | UR UF
+]
+auf

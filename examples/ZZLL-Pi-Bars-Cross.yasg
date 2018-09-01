@@ -1,6 +1,11 @@
-# permute two adjacent corners with a T perm
-moves R U R' U' R' F R2 U' R' U' R U R' F'
- 
+# do a random PLL that keeps the edges in phase
+permutable U | UL UR
+auf # now we don't know where initial UL and UR edges are
+
+# get a specific corner case, but make sure the edges stay in phase
+arrange U | buffer | UL UR
+derange URF URB | buffer | UL UR
+
 [
 # Do a U2 AUF. In this case it will be a cross COLL
 moves U2
@@ -9,14 +14,4 @@ OR
 ]
  
 ocll Pi
- 
-AUF
-# permute the edges, but keep them phased
-[
-moves R' U' R2 U R U R' U' R U R U' R U' R' # this is a Z perm
-OR
-moves R2 U2 R U2 R2 U2 R2 U2 R U2 R2 # H perm
-OR
-# do nothing
-]
-AUF
+auf
