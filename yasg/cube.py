@@ -13,6 +13,9 @@ class Corner:
             self.colors.insert(0, self.colors[-1])
             del self.colors[-1]
 
+    def is_oriented(self):
+        return self.colors[0] == self.oriented_color_order[0]
+
 class Edge:
     def __init__(self, colors: str):
         self.colors = [color for color in colors]
@@ -161,7 +164,7 @@ class Cube:
 
         # avoid CO parity by twisting the last corner correctly
         if total_clockwise_turns % 3 != 0:
-            self.corners[corners[-1]].rotate_clockwise((3 - total_clockwise_turns) % 3)
+            self.corners[corners[-1]].rotate_clockwise((- total_clockwise_turns) % 3)
 
     # flip all the edges of this cube randomly while keeping the cube solvable
     # @param edges:   the edges that should be scrambled
@@ -287,15 +290,7 @@ class Cube:
             i = start_next_move
 
     def orient_U_corners(self):
-        U_corners = self._clockwise_corner_order["U"]
-        num_twists = 0
-        for corner_location in U_corners:
-            corner = self.corners[corner_location]
-            t = corner.colors.index("U" if "U" in corner.colors else "D")
-            corner.rotate_clockwise((3 - t) % 3)
-            num_twists = num_twists + t
-        # avoid CO parity
-        self.corners["DFR"].rotate_clockwise((3 - num_twists) % 3)
+        self.orient_corners(self._clockwise_corner_order["U"], ["DFR"])
 
     def corner_is_solved(self, location):
         return self.corners[location].oriented_color_order == location
@@ -304,6 +299,9 @@ class Cube:
         return self.edges[location].oriented_color_order == location
 
     def arrange(self, corners, edges, buffer_corners, buffer_edges):
+        # shuffle the pieces randomly so that each permutation is equally likely.
+        self.random_permutation(corners + buffer_corners, edges + buffer_edges)
+
         arranged_corner_locations = set(corners)
         arranged_edge_locations   = set(edges)
         deranged_corner_locations = set(buffer_corners)
@@ -313,10 +311,16 @@ class Cube:
         # store the current location of the piece for each piece
         corner_location_map = {}
         edge_location_map = {}
-        for location in Cube.corner_locations:
-            corner_location_map[self.corners[location].oriented_color_order] = location
-        for location in Cube.edge_locations:
-            edge_location_map[self.edges[location].oriented_color_order] = location
+        def update_corner_map(locations):
+            for location in locations:
+                corner_location_map[self.corners[location].oriented_color_order] = location
+        def update_edge_map(locations):
+            for location in locations:
+                edge_location_map[self.edges[location].oriented_color_order] = location
+        update_corner_map(Cube.corner_locations)
+        update_edge_map(Cube.edge_locations)
+
+        # shuffle these pieces so that each permutation is equally likely
 
         # Iterate through the corner/edge locations you want to permute correcly and swap the
         # piece that is in this spot with the piece that belongs there
@@ -328,15 +332,12 @@ class Cube:
             spot_of_piece_that_belongs_here = corner_location_map[location]
             even_number_of_swaps = not even_number_of_swaps
             self._swap_corners(location, spot_of_piece_that_belongs_here)
-            # update the map
-            corner_location_map[self.corners[location].oriented_color_order] = location
-            corner_location_map[
-            self.corners[spot_of_piece_that_belongs_here].oriented_color_order] = spot_of_piece_that_belongs_here
+            update_corner_map([location, spot_of_piece_that_belongs_here])
 
             # We have disturbed a corner that wasn't specified by the user (although it was necessary)
             # Remember this for the parity check at the end
             if spot_of_piece_that_belongs_here not in arranged_corner_locations:
-                deranged_corner_locations.add()
+                deranged_corner_locations.add(spot_of_piece_that_belongs_here)
 
         # God copying this over is ugly.
         for location in edges:
@@ -347,14 +348,12 @@ class Cube:
             spot_of_piece_that_belongs_here = edge_location_map[location]
             even_number_of_swaps = not even_number_of_swaps
             self._swap_edges(location, spot_of_piece_that_belongs_here)
-            # update the map
-            edge_location_map[self.edges[location].oriented_color_order] = location
-            edge_location_map[self.edges[spot_of_piece_that_belongs_here].oriented_color_order] = spot_of_piece_that_belongs_here
+            update_edge_map([location, spot_of_piece_that_belongs_here])
 
             # We have disturbed an edge that wasn't specified by the user (although it was necessary)
             # Remember this for the parity check at the end
             if spot_of_piece_that_belongs_here not in arranged_edge_locations:
-                deranged_edge_locations.add()
+                deranged_edge_locations.add(spot_of_piece_that_belongs_here)
 
         # All the specified pieces should be solved now. We still have to check for parity.
         if not even_number_of_swaps:
@@ -374,6 +373,7 @@ class Cube:
                 self._swap_corners(i, j)
 
     def derange(self, corners, edges, buffer_corners, buffer_edges):
+        # shuffle the pieces randomly so that each permutation is equally likely.
         self.random_permutation(corners + buffer_corners, edges + buffer_edges)
         even_number_of_swaps = True
 
@@ -441,8 +441,10 @@ class Cube:
             else:
                 self._swap_edges(edges[0], edges[1])
 
+    def _flip_edge_if(self, edges, buffer, condition):
+        # Make every orientation equally likely
+        self.random_edge_orientation(edges + buffer)
 
-    def _flip_edge_if(self, edges, condition):
         num_flips = 0
         for edge_location in edges:
             edge = self.edges[edge_location]
@@ -450,25 +452,63 @@ class Cube:
                 num_flips +=1
                 edge.flip()
         if num_flips % 2 != 0:
-            # avoid parity
-            self.edges[edges[-1]].flip()
+            victim = random.choice(buffer if buffer else edges)
+            self.edges[victim].flip()
 
-    def orient_edges(self, edges):
-        self._flip_edge_if(edges, lambda e : not e.is_oriented())
+    def orient_edges(self, edges, buffer):
+        self._flip_edge_if(edges, buffer, lambda e : not e.is_oriented())
 
-    def disorient_edges(self, edges):
-        self._flip_edge_if(edges, lambda e : e.is_oriented())
+    def disorient_edges(self, edges, buffer):
+        self._flip_edge_if(edges, buffer, lambda e : e.is_oriented())
 
-    def _twist_corner_if(self, corners, num_twists_for_corner):
+    def orient_corners(self, corners, buffer):
+        # Make every orientation equally likely
+        self.random_corner_orientation(corners + buffer)
+
         num_twists = 0
         for corner_location in corners:
             corner = self.corners[corner_location]
-            n = num_twists_for_corner(corner)
+            n = (- corner.colors.index(corner.oriented_color_order[0])) % 3
             corner.rotate_clockwise(n)
             num_twists += n
         if num_twists % 3 != 0:
-            # avoid parity
-            self.corners[corners[-1]].rotate_clockwise((3 - num_twists) % 3)
+            victim = random.choice(buffer if buffer else corners)
+            self.corners[victim].rotate_clockwise((- num_twists) % 3)
+
+    def disorient_corners(self, corners, buffer):
+        # Make every orientation equally likely
+        self.random_corner_orientation(corners + buffer)
+
+        num_twists = 0
+        for corner_location in corners:
+            if self.corners[corner_location].is_oriented():
+                n = 1 + int(2*random.random())
+                self.corners[corner_location].rotate_clockwise(n)
+                num_twists += n
+
+        num_twists = num_twists % 3
+        if num_twists == 0:
+            return
+
+        if buffer:
+            self.corners[random.choice(buffer)].rotate_clockwise((- num_twists) % 3)
+            return
+        # See if there is any corner we can twist so that everything is disoriented and num_twists is a multiple of 3
+        for corner_location in corners:
+            corner = self.corners[corner_location]
+            if corner.colors[num_twists] != corner.oriented_color_order[0]:
+                corner.rotate_clockwise[(- num_twists) % 3]
+                return
+        # See if we can twist two corners to get them all disoriented
+        twistable_corners = [corner_location for corner_location in corners if corner.colors[(-num_twists)%3] != corner.oriented_color_order[0]]
+        if len(twistable_corners) >= 2:
+            a, b = tuple(random.sample(twistable_corners, 2))
+            self.corners[a].rotate_clockwise(num_twists)
+            self.corners[b].rotate_clockwise(num_twists)
+            return
+        # Nothing worked. We can't disorient these corners.
+        self.corners[random.choice(corners)].rotate_clockwise((-num_twists)%3)
+
 
 if __name__ == "__main__":
     # test

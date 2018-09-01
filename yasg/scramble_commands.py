@@ -28,13 +28,31 @@ def parse_pieces_input(input):
     return (parse_pieces_same_type(corners, parse_corner_id, Cube.corner_locations),
             parse_pieces_same_type(edges, parse_edge_id, Cube.edge_locations))
 
-def permute(cb : Cube, args : str):
+def permutable(cb : Cube, args : str):
     cb.random_permutation(*parse_pieces_input(args))
 
-def orient(cb : Cube, args : str):
+def orientable(cb : Cube, args : str):
     corners, edges = parse_pieces_input(args)
     cb.random_corner_orientation(corners)
     cb.random_edge_orientation(edges)
+
+def arrange(cb : Cube, arrange_args, buffer_args = " | "):
+    cb.arrange(*parse_pieces_input(arrange_args), *parse_pieces_input(buffer_args))
+
+def derange(cb : Cube, derange_args, buffer_args = " | "):
+    cb.derange(*parse_pieces_input(derange_args), *parse_pieces_input(buffer_args))
+
+def orient(cb : Cube, orient_args, buffer_args = " | "):
+    corners, edges = parse_pieces_input(orient_args)
+    buffer_corners, buffer_edges = parse_pieces_input(buffer_args)
+    cb.orient_corners(corners, buffer_corners)
+    cb.orient_edges(edges,buffer_edges)
+
+def disorient(cb : Cube, disorient_args, buffer_args = " | "):
+    corners, edges = parse_pieces_input(disorient_args)
+    buffer_corners, buffer_edges = parse_pieces_input(buffer_args)
+    cb.disorient_corners(corners, buffer_corners)
+    cb.disorient_edges(edges, buffer_edges)
 
 _U_corners  = parse_pieces_same_type("U", parse_corner_id, Cube.corner_locations)
 _U_edges    = parse_pieces_same_type("U", parse_edge_id, Cube.edge_locations)

@@ -18,8 +18,8 @@ class Interpreter:
         self._program = [line for line in self._program if line and not line.isspace()]
 
         self._commands = {
-            "permute"   : lambda pieces : scramble_commands.permute(self._cube, pieces),
-            "disorient" : lambda pieces : scramble_commands.orient(self._cube, pieces),
+            "permute"   : lambda pieces : scramble_commands.permutable(self._cube, pieces),
+            "disorient" : lambda pieces : scramble_commands.orientable(self._cube, pieces),
             "step"      : lambda step   : scramble_commands.set_step(self._cube, step),
             "badedges"  : lambda n      : self._cube.flip_n_edges(int(n)),
             "ocll"      : lambda case   : scramble_commands.twist_ll_corners(self._cube, case),
